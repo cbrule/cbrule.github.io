@@ -8,6 +8,7 @@
      <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
      <script src="https://unpkg.com/esri-leaflet@2.0.4/dist/esri-leaflet.js"></script>
      <script src="https://unpkg.com/esri-leaflet-renderers@2.0.2/dist/esri-leaflet-renderers.js"></script>
+     <script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
 
   </head>
   <body>
@@ -92,7 +93,12 @@
 	        layer.bringToFront();
 	    }
 	    clicked.push(e.target.feature.id);
-  }
+
+
+	    var poly = turf.polygon([layer.feature.geometry.coordinates[0]])
+	    var buffered = turf.buffer(poly, 0.0378788, 'miles');
+	    L.geoJson(buffered).addTo(map);
+	}
 
 	var kelParcels = L.esri.featureLayer({url: 'https://gis.cityofkeller.com/arcgis/rest/services/CRW_Parcels/MapServer/0', style: style, onEachFeature: onEachFeature}).addTo(map);
 

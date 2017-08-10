@@ -16,6 +16,7 @@
   	<script> 
   	var map = L.map('mapid').setView([32.93, -97.22], 17);
   	var clicked = [];
+  	var intersected = [];
 
   	L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
     	attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
@@ -37,7 +38,7 @@
 
 	function highlightFeature(e) {
     	var layer = e.target;
-    	if (clicked.indexOf(e.target.feature.id) < 0 ) {
+    	if (clicked.indexOf(e.target.feature.id) < 0 && intersected.indexOf(e.target.feature.id) < 0) {
 		    layer.setStyle({
 		        weight: 5,
 		        color: '#1AD4D7',
@@ -54,7 +55,7 @@
 
 	function resetHighlight(e) {
 		var layer = e.target;
-		if (clicked.indexOf(e.target.feature.id) < 0 ) {
+		if (clicked.indexOf(e.target.feature.id) < 0 && intersected.indexOf(e.target.feature.id) < 0) {
 			layer.setStyle({
 				weight: 2,
 				opacity: 1,
@@ -81,6 +82,11 @@
   	function clickedFeature(e) {
     	var layer = e.target;
 
+    	if (typeof bufLyr !== 'undefined') {
+    		map.removeLayer(bufLyr);
+    		kelParcels.resetStyle();
+    	}
+
 	    layer.setStyle({
 	        weight: 5,
 	        color: '#666',
@@ -96,15 +102,27 @@
 
 
 	    var poly = turf.polygon([layer.feature.geometry.coordinates[0]])
-	    var buffered = turf.buffer(poly, 0.0378788, 'miles');
-	    L.geoJson(buffered).addTo(map);
+	    var buffered = turf.buffer(poly, 0.0568182, 'miles');
+	    bufLyr = L.geoJson(buffered).addTo(map);
+
+	    kelParcels.query()["intersects"](buffered).ids(function(error, ids){
+	    	intersected = ids;
+			OIDs = ids.join();
+			for (var i = ids.length - 1; i >= 0; i--) {
+				kelParcels.setFeatureStyle(ids[i], { color: 'red', weight: 3 });
+      			};
+  			//kelParcels.setWhere("OBJECTID IN (" + OIDs + ")")
+	    });
+
+	    //var clipped = turf.bboxClip(poly, buffered)
+	    //L.geoJson(clipped).addTo(map);
 	}
 
 	var kelParcels = L.esri.featureLayer({url: 'https://gis.cityofkeller.com/arcgis/rest/services/CRW_Parcels/MapServer/0', style: style, onEachFeature: onEachFeature}).addTo(map);
 
-    kelParcels.bindPopup(function(evt) {
-    	return L.Util.template('<h3>{GIS_LINK}</h3><hr /><p>{STREETNUMBER} {STREETNAME} {STREETTYPE}', evt.feature.properties);
-	}); 
+    //kelParcels.bindPopup(function(evt) {
+    //	return L.Util.template('<h3>{GIS_LINK}</h3><hr /><p>{STREETNUMBER} {STREETNAME} {STREETTYPE}', evt.feature.properties);
+	//}); 
   	</script>
   </body>
 </html>

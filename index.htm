@@ -84,7 +84,7 @@
 
     	if (typeof bufLyr !== 'undefined') {
     		map.removeLayer(bufLyr);
-    		kelParcels.resetStyle();
+    		parcels.resetStyle();
     	}
 
 	    layer.setStyle({
@@ -105,22 +105,22 @@
 	    var buffered = turf.buffer(poly, 0.0568182, 'miles');
 	    bufLyr = L.geoJson(buffered).addTo(map);
 
-	    kelParcels.query()["intersects"](buffered).ids(function(error, ids){
+	    parcels.query()["intersects"](buffered).ids(function(error, ids){
 	    	intersected = ids;
 			OIDs = ids.join();
 			for (var i = ids.length - 1; i >= 0; i--) {
-				kelParcels.setFeatureStyle(ids[i], { color: 'red', weight: 3 });
+				parcels.setFeatureStyle(ids[i], { color: 'red', weight: 3 });
       			};
-  			//kelParcels.setWhere("OBJECTID IN (" + OIDs + ")")
+  			//parcels.setWhere("OBJECTID IN (" + OIDs + ")")
 	    });
 
 	    //var clipped = turf.bboxClip(poly, buffered)
 	    //L.geoJson(clipped).addTo(map);
 	}
 
-	var kelParcels = L.esri.featureLayer({url: 'https://gis.cityofkeller.com/arcgis/rest/services/CRW_Parcels/MapServer/0', style: style, onEachFeature: onEachFeature}).addTo(map);
+	var parcels = L.esri.featureLayer({url: 'https://mapit.tarrantcounty.com/arcgis/rest/services/Dynamic/TADParcels/MapServer/0', style: style, onEachFeature: onEachFeature}).addTo(map);
 
-    //kelParcels.bindPopup(function(evt) {
+    //parcels.bindPopup(function(evt) {
     //	return L.Util.template('<h3>{GIS_LINK}</h3><hr /><p>{STREETNUMBER} {STREETNAME} {STREETTYPE}', evt.feature.properties);
 	//}); 
   	</script>

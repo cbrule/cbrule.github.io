@@ -1,18 +1,66 @@
 <!DOCTYPE html>
 <html>
+
   <head>
     <meta charset="UTF-8">
     <title></title>
-     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
-     <link rel="stylesheet" href="style.css"/>
-     <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
-     <script src="https://unpkg.com/esri-leaflet@2.0.4/dist/esri-leaflet.js"></script>
-     <script src="https://unpkg.com/esri-leaflet-renderers@2.0.2/dist/esri-leaflet-renderers.js"></script>
-     <script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
-
+    <link rel="stylesheet" href="jquery-ui.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css"/>
+    <link rel="stylesheet" href="style.css"/>
+	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/esri-leaflet@2.0.4/dist/esri-leaflet.js"></script>
+    <script src="https://unpkg.com/esri-leaflet-renderers@2.0.2/dist/esri-leaflet-renderers.js"></script>
+    <script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
+    <script>
+    	  $( function() {$( "#tools" ).draggable();} );
+    	  $( function() {$( "#chart" ).draggable();} );
+    </script>
   </head>
+
   <body>
   	<div id="mapid"></div>
+  	<div id="tools" class="ui-widget-content">
+  		<div class="container">
+  			<div class="row justify-content-center">
+  				<div class="col text-center">
+  					<h3>BUF</h3>
+  				</div>
+  			</div>
+  			<br>
+  			<br>
+  			<div class="row justify-content-center">
+  				<div class="col text-center">
+  					<h3>ADD</h3>
+  				</div>
+  			</div>
+  			<br>
+  			<br>
+  			<div class="row justify-content-center">
+  				<div class="col text-center">
+  					<h3>SUB</h3>
+  				</div>
+  			</div>
+  			<br>
+  			<br>
+  			<div class="row justify-content-center">
+  				<div class="col text-center">
+  					<h3>RESET</h3>
+  				</div>
+  			</div>	
+  		</div>
+  	</div>
+  	  	<div id="chart" class="ui-widget-content">
+  		<div class="container">
+  			<div class="row justify-content-center">
+  				<div class="col text-center">
+  					<h1>CHART</h1>
+  				</div>
+  			</div>
+  		</div>
+  	</div>
   	<script> 
   	var map = L.map('mapid').setView([32.93, -97.22], 17);
   	var clicked = [];

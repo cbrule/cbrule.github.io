@@ -1,7 +1,6 @@
 # ---------------------------------------------------------------------------
 # CalculateOpposed.py
-# Cody Brule - City of Keller GIS
-# cbrule@cityofkeller.com
+#
 # Last updated: 05/08/14
 # 
 # Calculates land area that is opposed based on selection from Parcels layer.

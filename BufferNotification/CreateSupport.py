@@ -1,7 +1,6 @@
 # ---------------------------------------------------------------------------
 # CreateSupport.py
-# Cody Brule - City of Keller GIS
-# cbrule@cityofkeller.com
+#
 # Last updated: 05/07/14
 # 
 # Exports selected parcels from parcel layer to Support layer.

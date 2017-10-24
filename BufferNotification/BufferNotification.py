@@ -1,7 +1,6 @@
 # ---------------------------------------------------------------------------
 # BufferNotification.py
-# Cody Brule - City of Keller GIS
-# cbrule@cityofkeller.com
+#
 # Last updated: 05/04/15
 # 
 # Creates a 200 & 300 ft buffer around selected parcel(s). Exports a list of property owners 

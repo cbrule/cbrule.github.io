@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="jquery-ui.min.css"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css"/>
+    <link rel="stylesheet" href="pe-icon-7-stroke/css/pe-icon-7-stroke.css">
+    <link rel="stylesheet" href="pe-icon-7-stroke/css/helper.css">
     <link rel="stylesheet" href="style.css"/>
 	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
@@ -26,37 +28,42 @@
   		<div class="container">
   			<div class="row justify-content-center">
   				<div class="col text-center">
-  					<h3>BUF</h3>
+  					<span class="pe-7s-expand1 pe-4x pe-va"></span>
   				</div>
   			</div>
   			<br>
   			<br>
   			<div class="row justify-content-center">
   				<div class="col text-center">
-  					<h3>ADD</h3>
+  					<span class="pe-7s-plus pe-4x pe-va"></span>
   				</div>
   			</div>
   			<br>
   			<br>
   			<div class="row justify-content-center">
   				<div class="col text-center">
-  					<h3>SUB</h3>
+  					<span class="pe-7s-less pe-4x pe-va"></span>
   				</div>
   			</div>
   			<br>
   			<br>
   			<div class="row justify-content-center">
   				<div class="col text-center">
-  					<h3>RESET</h3>
-  				</div>
+					<p><i class="pe-7s-close-circle pe-4x pe-va"></i></p>
+				</div>
   			</div>	
   		</div>
   	</div>
   	  	<div id="chart" class="ui-widget-content">
   		<div class="container">
   			<div class="row justify-content-center">
-  				<div class="col text-center">
+  				<div class="col">
   					<h1>CHART</h1>
+  					<ul>
+  						<li>depress buttons on click and show selection</li>
+  						<li>only load parcels in view</li>
+  						<li>show loading gif on pan/zoom as new parcels are loaded</li>
+  					</ul>
   				</div>
   			</div>
   		</div>

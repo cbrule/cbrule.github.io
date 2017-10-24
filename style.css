@@ -11,16 +11,21 @@ body {
 	width: 100%; 
 	z-index: 0;
 	position: absolute;
+
 }
 #tools { 
 	height: 600px;
 	width: 100px; 
 	z-index: 2;
 	position: absolute;
+	top: 10%;
+	left: 2%;
 }
 #chart { 
 	height: 350px;
 	width: 350px; 
 	z-index: 1;
 	position: absolute;
+	top: 2%;
+	right: 2%;
 }

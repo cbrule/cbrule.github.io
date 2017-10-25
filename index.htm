@@ -168,6 +168,9 @@
       			};
   			//parcels.setWhere("OBJECTID IN (" + OIDs + ")")
 	    });
+	    var bbox = turf.bbox(buffered);
+	    var bounds = [[bbox[1], bbox[0]], [bbox[3], bbox[2]]];
+	    map.fitBounds(bounds);
 
 	    //var clipped = turf.bboxClip(poly, buffered)
 	    //L.geoJson(clipped).addTo(map);
@@ -181,3 +184,5 @@
   	</script>
   </body>
 </html>
+
+

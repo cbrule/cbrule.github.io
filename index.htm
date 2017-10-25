@@ -173,9 +173,9 @@
 	    //L.geoJson(clipped).addTo(map);
 	}
 
-	var parcels = L.esri.featureLayer({url: 'https://mapit.tarrantcounty.com/arcgis/rest/services/Dynamic/TADParcels/MapServer/0', style: style, onEachFeature: onEachFeature}).addTo(map);
+	var parcels = L.esri.featureLayer({url: 'https://mapit.tarrantcounty.com/arcgis/rest/services/Dynamic/TADParcels/MapServer/0', style: style, onEachFeature: onEachFeature, minZoom: 16 }).addTo(map);
 
-    //parcels.bindPopup(function(evt) {
+    //parcels.bindPopup(function(evt) 
     //	return L.Util.template('<h3>{GIS_LINK}</h3><hr /><p>{STREETNUMBER} {STREETNAME} {STREETTYPE}', evt.feature.properties);
 	//}); 
   	</script>

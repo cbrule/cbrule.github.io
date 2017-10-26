@@ -33,6 +33,10 @@
   					<span id="buf" class="pe-7s-expand1 pe-4x pe-va pe-spin pointer click"></span>
   				</div>
   			</div>
+        <select id=dist>
+          <option value=0.0378788>200</option>
+          <option value=0.0568182>300</option>
+        </select>
   			<br>
   			<br>
   			<div class="row justify-content-center">
@@ -165,7 +169,7 @@
 
 
 	    var poly = turf.polygon([layer.feature.geometry.coordinates[0]])
-	    var buffered = turf.buffer(poly, 0.0568182, 'miles');
+	    var buffered = turf.buffer(poly, $('#dist option:selected').val(), 'miles');
 	    bufLyr = L.geoJson(buffered).addTo(map);
 
 	    parcels.query()["intersects"](buffered).ids(function(error, ids){

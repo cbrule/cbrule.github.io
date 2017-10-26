@@ -25,31 +25,33 @@
   <body>
   	<div id="mapid"></div>
   	<div id="tools" class="ui-widget-content">
+      <br>
+      <br>
   		<div class="container">
   			<div class="row justify-content-center">
   				<div class="col text-center">
-  					<span class="pe-7s-expand1 pe-4x pe-va"></span>
+  					<span id="buf" class="pe-7s-expand1 pe-4x pe-va pe-spin pointer click"></span>
   				</div>
   			</div>
   			<br>
   			<br>
   			<div class="row justify-content-center">
   				<div class="col text-center">
-  					<span class="pe-7s-plus pe-4x pe-va"></span>
+  					<span id="support" class="pe-7s-plus pe-4x pe-va pointer click" data-selected="true"></span>
   				</div>
   			</div>
   			<br>
   			<br>
   			<div class="row justify-content-center">
   				<div class="col text-center">
-  					<span class="pe-7s-less pe-4x pe-va"></span>
+  					<span id="opposed" class="pe-7s-less pe-4x pe-va pointer click"></span>
   				</div>
   			</div>
   			<br>
   			<br>
   			<div class="row justify-content-center">
   				<div class="col text-center">
-					<p><i class="pe-7s-close-circle pe-4x pe-va"></i></p>
+					   <span id="clear" class="pe-7s-close-circle pe-4x pe-va pointer click"></span>
 				</div>
   			</div>	
   		</div>
@@ -59,16 +61,22 @@
   			<div class="row justify-content-center">
   				<div class="col">
   					<h1>CHART</h1>
-  					<ul>
-  						<li>depress buttons on click and show selection</li>
-  						<li>only load parcels in view</li>
-  						<li>show loading gif on pan/zoom as new parcels are loaded</li>
-  					</ul>
+            <textarea rows="10" cols="40">depress buttons on click and show selection &#013 only load parcels in view &#013 show loading gif on pan/zoom as new parcels are loaded
+            </textarea>
+
   				</div>
   			</div>
   		</div>
   	</div>
-  	<script> 
+  	<script>
+
+    $('.click').click(function(event){ 
+      $('.click').removeClass('pe-spin');
+      $('#' + event.target.id).addClass('pe-spin')
+    });
+
+
+
   	var map = L.map('mapid').setView([32.93, -97.22], 17);
   	var clicked = [];
   	var intersected = [];

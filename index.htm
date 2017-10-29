@@ -16,6 +16,7 @@
     <script src="https://unpkg.com/esri-leaflet@2.0.4/dist/esri-leaflet.js"></script>
     <script src="https://unpkg.com/esri-leaflet-renderers@2.0.2/dist/esri-leaflet-renderers.js"></script>
     <script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js" /></script>
     <script>
     	  $( function() {$( "#tools" ).draggable();} );
     	  $( function() {$( "#chart" ).draggable();} );
@@ -24,19 +25,64 @@
 
   <body>
   	<div id="mapid"></div>
+  	<div id="chart" class="ui-widget-content>
+  		<div class="container">
+<!--   			<div class="row">
+				<ul class="segmented-control">
+				    <li class="segmented-control__item">
+				        <input class="segmented-control__input" type="radio" value="red" name="layerControl" id="red" checked="checked">
+				        <label class="segmented-control__label" for="red" style="cursor: pointer;">Red Team</label>
+				    </li>
+				    <li class="segmented-control__item">
+				        <input class="segmented-control__input" type="radio" value="green" name="layerControl" id="green">
+				        <label class="segmented-control__label" for="green" style="cursor: pointer;">Green Team</label>
+				    </li>
+				</ul>
+			</div> -->
+  			<canvas id="myChart" width="400" height="400"></canvas>	
+  			<div class="row">
+  				<div class="col">
+  					<small>Total Land Area</small>
+  				</div>
+  				<div class="col">
+  					<small>Area Opposed</small>
+  				</div>
+  				<div class="col">
+  					<small>Area in Support</small>
+  				</div>
+  			</div>
+  			<div class="row">
+  				<div class="col">
+  					<small><span id="totalArea"></small>
+  				</div>
+  				<div class="col">
+  					<small><span id="opposedArea"></small>
+  				</div>
+  				<div class="col">
+  					<small><span id="supportArea"></small>
+  				</div>
+  			</div>
+		</div>
+	</div>
+
+		
+	</div>
+
   	<div id="tools" class="ui-widget-content">
       <br>
       <br>
   		<div class="container">
   			<div class="row justify-content-center">
   				<div class="col text-center">
-  					<span id="buf" class="pe-7s-expand1 pe-4x pe-va pe-spin pointer click"></span>
+  					<span id="buf" class="pe-7s-expand1 pe-4x pe-va orange pointer click"></span>
   				</div>
   			</div>
-        <select id=dist>
-          <option value=0.0378788>200</option>
-          <option value=0.0568182>300</option>
-        </select>
+  			<div class="row justify-content-center">
+  				<div class="col text-center">
+  					<input type="text" id="dist" value="300"><br>
+  					<small>feet</small>
+  				</div>
+  			</div>
   			<br>
   			<br>
   			<div class="row justify-content-center">
@@ -60,24 +106,12 @@
   			</div>	
   		</div>
   	</div>
-  	  	<div id="chart" class="ui-widget-content">
-  		<div class="container">
-  			<div class="row justify-content-center">
-  				<div class="col">
-  					<h1>CHART</h1>
-            <textarea rows="10" cols="40">depress buttons on click and show selection &#013 only load parcels in view &#013 show loading gif on pan/zoom as new parcels are loaded
-            </textarea>
-
-  				</div>
-  			</div>
-  		</div>
-  	</div>
   	<script>
       var glo;
 
     $('.click').click(function(event){ 
-      $('.click').removeClass('pe-spin');
-      $('#' + event.target.id).addClass('pe-spin')
+      $('.click').removeClass('orange');
+      $('#' + event.target.id).addClass('orange')
     });
 
     $('#dist').change(function () {
@@ -152,8 +186,8 @@
 	}
 
   	function clickedFeature(e) {
-    	layer = e.target;
-      glo =  {target: e.target};
+  		layer = e.target;
+      	glo =  {target: e.target};
 
     	if (typeof bufLyr !== 'undefined') {
     		map.removeLayer(bufLyr);
@@ -165,7 +199,7 @@
 	        color: '#666',
 	        dashArray: '',
 	        fillOpacity: 0.7,
-	        fillColor: 'red'
+	        fillColor: 'orange'
 	    });
 
 	    if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
@@ -175,14 +209,15 @@
 
 
 	    var poly = turf.polygon([layer.feature.geometry.coordinates[0]])
-	    var buffered = turf.buffer(poly, $('#dist option:selected').val(), 'miles');
+	    distance = parseInt($('#dist').val()) * 0.000189394;
+	    var buffered = turf.buffer(poly, distance , 'miles');
 	    bufLyr = L.geoJson(buffered).addTo(map);
 
 	    parcels.query()["intersects"](buffered).ids(function(error, ids){
 	    	intersected = ids;
 			OIDs = ids.join();
 			for (var i = ids.length - 1; i >= 0; i--) {
-				parcels.setFeatureStyle(ids[i], { color: 'red', weight: 3 });
+				parcels.setFeatureStyle(ids[i], { color: 'orange', weight: 3 });
       			};
   			//parcels.setWhere("OBJECTID IN (" + OIDs + ")")
 	    });
@@ -199,6 +234,24 @@
     //parcels.bindPopup(function(evt) 
     //	return L.Util.template('<h3>{GIS_LINK}</h3><hr /><p>{STREETNUMBER} {STREETNAME} {STREETTYPE}', evt.feature.properties);
 	//}); 
+
+
+
+	//chart stuff
+	var data = {
+	    datasets: [{
+	    	data: [50, 40, 10],
+	    	backgroundColor: ['#ff3333', '#339933', 'orange']
+	    }],
+
+	    // These labels appear in the legend and in the tooltips when hovering different arcs
+	    labels: ['Opposed','Support', 'Other']
+	};
+	var ctx = document.getElementById("myChart").getContext('2d');
+	var myDoughnutChart = new Chart(ctx, {
+	    type: 'doughnut',
+	    data: data
+	});
   	</script>
   </body>
 </html>

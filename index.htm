@@ -74,7 +74,7 @@
   		<div class="container">
   			<div class="row justify-content-center">
   				<div class="col text-center">
-  					<span id="buf" class="pe-7s-expand1 pe-4x pe-va orange pointer click"></span>
+  					<span id="buf" class="pe-7s-expand1 pe-3x pe-va orange pointer click"></span>
   				</div>
   			</div>
   			<div class="row justify-content-center">
@@ -87,27 +87,75 @@
   			<br>
   			<div class="row justify-content-center">
   				<div class="col text-center">
-  					<span id="support" class="pe-7s-plus pe-4x pe-va pointer click" data-selected="true"></span>
+  					<span id="support" class="pe-7s-plus pe-3x pe-va pointer click" data-selected="true"></span>
   				</div>
   			</div>
   			<br>
   			<br>
   			<div class="row justify-content-center">
   				<div class="col text-center">
-  					<span id="opposed" class="pe-7s-less pe-4x pe-va pointer click"></span>
+  					<span id="opposed" class="pe-7s-less pe-3x pe-va pointer click"></span>
   				</div>
   			</div>
   			<br>
   			<br>
   			<div class="row justify-content-center">
   				<div class="col text-center">
-					   <span id="clear" class="pe-7s-close-circle pe-4x pe-va pointer click"></span>
+					   <span id="clear" class="pe-7s-close-circle pe-3x pe-va pointer click"></span>
 				</div>
   			</div>	
+        <br>
+        <br>
+        <div class="row justify-content-center">
+          <div class="col text-center">
+             <span id="config" class="pe-7s-config pe-3x pe-va pointer click"></span>
+        </div>
+        </div>  
   		</div>
   	</div>
+
+    <div id="dialog-form" title="Settings">
+      <form>
+        <fieldset>
+          <div class="form-group">
+            <label for="distance1">Inner Distance</label><br />
+            <div class="row">
+              <div class="col-6">
+                <input type="text" name="distance1" id="distance1" class="form-control text ui-widget-content ui-corner-all"><br />
+              </div>
+              <div class="col-6">ft</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="distance2">Outer Distance</label><br />
+            <div class="row">
+              <div class="col-6">
+                <input type="text" name="distance2" id="distance2" class="form-control text ui-widget-content ui-corner-all"><br />
+              </div>
+              <div class="col-6">ft</div>
+            </div>
+            <div class="form-group">
+              <label for="parcel_url">Parcel REST URL</label><br />
+              <input type="text" name="parcel_url" id="parcel_url" class="form-control text ui-widget-content ui-corner-all">
+            </div>
+          </div>
+     
+          <!-- Allow form submission with keyboard without duplicating the dialog button -->
+          <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+        </fieldset>
+      </form>
+    </div>
+
   	<script>
       var glo;
+
+
+      var dialog, form,
+      inner_dist = $( "#distance1" ),
+      outer_dist = $( "#distance2" ),
+      parcel_url = $( "#parcel_url" );
+
+
 
     $('.click').click(function(event){ 
       $('.click').removeClass('orange');
@@ -118,7 +166,35 @@
       clickedFeature(glo);
     });
 
-
+    dialog = $( "#dialog-form" ).dialog({
+      autoOpen: false,
+      height: 450,
+      width: 450,
+      modal: true,
+      buttons: {
+        "Save": function() {
+          console.log("saved");//TODO: Add config save function
+          dialog.dialog( "close" );
+          }, 
+        Cancel: function() {
+          dialog.dialog( "close" );
+        }
+      },
+      close: function() {
+        form[ 0 ].reset();
+        $('.click').removeClass('orange');
+      }
+    });
+ 
+    form = dialog.find( "form" ).on( "submit", function( event ) { 
+      event.preventDefault();
+      console.log("saved");
+      dialog.dialog( "close" );
+    });
+ 
+    $( "#config" ).on( "click", function() {
+      dialog.dialog( "open" );
+    });
 
   	var map = L.map('mapid').setView([32.93, -97.22], 17);
   	var clicked = [];

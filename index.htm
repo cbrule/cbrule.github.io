@@ -77,12 +77,12 @@
   					<span id="buf" class="pe-7s-expand1 pe-3x pe-va orange pointer click"></span>
   				</div>
   			</div>
-  			<div class="row justify-content-center">
+<!--   			<div class="row justify-content-center">
   				<div class="col text-center">
   					<input type="text" id="dist" value="300"><br>
   					<small>feet</small>
   				</div>
-  			</div>
+  			</div> -->
   			<br>
   			<br>
   			<div class="row justify-content-center">
@@ -150,10 +150,9 @@
       var glo;
 
 
-      var dialog, form,
-      inner_dist = $( "#distance1" ),
-      outer_dist = $( "#distance2" ),
-      parcel_url = $( "#parcel_url" );
+      var dialog, form, config;
+
+      GetConfigFromStorage();
 
 
 
@@ -166,37 +165,9 @@
       clickedFeature(glo);
     });
 
-    dialog = $( "#dialog-form" ).dialog({
-      autoOpen: false,
-      height: 450,
-      width: 450,
-      modal: true,
-      buttons: {
-        "Save": function() {
-          console.log("saved");//TODO: Add config save function
-          dialog.dialog( "close" );
-          }, 
-        Cancel: function() {
-          dialog.dialog( "close" );
-        }
-      },
-      close: function() {
-        form[ 0 ].reset();
-        $('.click').removeClass('orange');
-      }
-    });
- 
-    form = dialog.find( "form" ).on( "submit", function( event ) { 
-      event.preventDefault();
-      console.log("saved");
-      dialog.dialog( "close" );
-    });
- 
-    $( "#config" ).on( "click", function() {
-      dialog.dialog( "open" );
-    });
 
-  	var map = L.map('mapid').setView([32.93, -97.22], 17);
+
+  	var map = L.map('mapid').setView(config.view.center, config.view.zoom);//[32.93, -97.22], 17);
   	var clicked = [];
   	var intersected = [];
 
@@ -285,7 +256,8 @@
 
 
 	    var poly = turf.polygon([layer.feature.geometry.coordinates[0]])
-	    distance = parseInt($('#dist').val()) * 0.000189394;
+	    //distance = parseInt($('#dist').val()) * 0.000189394;
+      distance = config.inner_dist * 0.000189394;
 	    var buffered = turf.buffer(poly, distance , 'miles');
 	    bufLyr = L.geoJson(buffered).addTo(map);
 
@@ -305,7 +277,12 @@
 	    //L.geoJson(clipped).addTo(map);
 	}
 
-	var parcels = L.esri.featureLayer({url: 'https://mapit.tarrantcounty.com/arcgis/rest/services/Dynamic/TADParcels/MapServer/0', style: style, onEachFeature: onEachFeature, minZoom: 16 }).addTo(map);
+	var parcels = L.esri.featureLayer({
+    url: config.parcel_url, 
+    style: style, 
+    onEachFeature: onEachFeature, 
+    minZoom: 16 
+  }).addTo(map);
 
     //parcels.bindPopup(function(evt) s
     //	return L.Util.template('<h3>{GIS_LINK}</h3><hr /><p>{STREETNUMBER} {STREETNAME} {STREETTYPE}', evt.feature.properties);
@@ -328,7 +305,78 @@
 	    type: 'doughnut',
 	    data: data
 	});
+
+
+  //config stuff
+  dialog = $( "#dialog-form" ).dialog({
+    autoOpen: false,
+    height: 450,
+    width: 450,
+    modal: true,
+    buttons: {
+      "Save": function() {
+        SaveConfig();
+        dialog.dialog( "close" );
+        }, 
+      Cancel: function() {
+        dialog.dialog( "close" );
+      }
+    },
+    close: function() {
+      form[0].reset();
+      $('.click').removeClass('orange');
+    }
+  });
+
+  form = dialog.find( "form" ).on( "submit", function( event ) { 
+    event.preventDefault();
+    SaveConfig();
+    dialog.dialog( "close" );
+  });
+
+  $( "#config" ).on( "click", function() {
+    $( "#distance1" ).val(config.inner_dist);
+    $( "#distance2" ).val(config.outer_dist);
+    $( "#parcel_url" ).val(config.parcel_url);
+    dialog.dialog( "open" );
+  });
+
+  function SaveConfig() {
+    // var center = map.getCenter();
+    // var zoom = map.getZoom();
+    config = {
+      inner_dist: $( "#distance1" ).val(),
+      outer_dist: $( "#distance2" ).val(),
+      parcel_url: $( "#parcel_url" ).val(), 
+      view: { center: map.getCenter(), zoom: map.getZoom() }
+    };
+    localStorage.setItem("Config", JSON.stringify(config));   
+    // parcels.options.url = config.parcel_url;
+    // parcels.refresh();
+    location.reload();
+  }
+
+
+  function GetConfigFromStorage() {
+    var localConfig = JSON.parse(localStorage.getItem("Config"));
+    if (localConfig) {
+      config = {
+        inner_dist: localConfig.inner_dist,
+        outer_dist: localConfig.outer_dist,
+        parcel_url: localConfig.parcel_url,
+        view: localConfig.view
+      }
+    } else {
+      config = {
+        inner_dist: 200,
+        outer_dist: 300,
+        parcel_url: 'https://mapit.tarrantcounty.com/arcgis/rest/services/Dynamic/TADParcels/MapServer/0',
+        view: { center: [32.93, -97.22], zoom: 17 }
+      };
+    }
+  }
   	</script>
+  }
   </body>
 </html>
 

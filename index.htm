@@ -256,9 +256,8 @@
 
 
 	    var poly = turf.polygon([layer.feature.geometry.coordinates[0]])
-	    //distance = parseInt($('#dist').val()) * 0.000189394;
-      distance = config.inner_dist * 0.000189394;
-	    var buffered = turf.buffer(poly, distance , 'miles');
+      distance = parseInt(config.inner_dist);
+	    var buffered = turf.buffer(poly, distance, { units: 'feet' });
 	    bufLyr = L.geoJson(buffered).addTo(map);
 
 	    parcels.query()["intersects"](buffered).ids(function(error, ids){
@@ -345,8 +344,8 @@
     // var center = map.getCenter();
     // var zoom = map.getZoom();
     config = {
-      inner_dist: $( "#distance1" ).val(),
-      outer_dist: $( "#distance2" ).val(),
+      inner_dist: parseInt($( "#distance1" ).val()),
+      outer_dist: parseInt($( "#distance2" ).val()),
       parcel_url: $( "#parcel_url" ).val(), 
       view: { center: map.getCenter(), zoom: map.getZoom() }
     };
@@ -360,12 +359,13 @@
   function GetConfigFromStorage() {
     var localConfig = JSON.parse(localStorage.getItem("Config"));
     if (localConfig) {
-      config = {
-        inner_dist: localConfig.inner_dist,
-        outer_dist: localConfig.outer_dist,
-        parcel_url: localConfig.parcel_url,
-        view: localConfig.view
-      }
+      config = localConfig;
+      // {
+      //   inner_dist: localConfig.inner_dist,
+      //   outer_dist: localConfig.outer_dist,
+      //   parcel_url: localConfig.parcel_url,
+      //   view: localConfig.view
+      // }
     } else {
       config = {
         inner_dist: 200,

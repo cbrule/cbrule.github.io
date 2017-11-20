@@ -148,35 +148,56 @@
 
   	<script>
       var glo;
+      var map;
+      var parcels;
+      var clicked = [];
+      var intersected = [];
 
+    $(document).ready(function(){
+      $( "#config" ).on( "click", function() {    
+        config.dialog.dialog( "open" );
+      });
 
-      var dialog, form, config;
+      $('.click').click(function(event){ 
+        $('.click').removeClass('orange');
+        $('#' + event.target.id).addClass('orange')
+      });
 
-      GetConfigFromStorage();
+      $('#dist').change(function () {
+        clickedFeature(glo);
+      });
 
+      var default_settings = {
+        inner_dist: 200,
+        outer_dist: 300, 
+        parcel_url: 'https://mapit.tarrantcounty.com/arcgis/rest/services/Dynamic/TADParcels/MapServer/0',
+        view: { 
+          center: [32.93, -97.22], 
+          zoom: 17 
+        }
+      };
 
+      config.init(default_settings, function(){
+        map = L.map('mapid').setView(config.settings.view.center, config.settings.view.zoom);
 
-    $('.click').click(function(event){ 
-      $('.click').removeClass('orange');
-      $('#' + event.target.id).addClass('orange')
+        L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+          attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+          maxZoom: 18,
+          id: 'mapbox.streets',
+          accessToken: 'pk.eyJ1IjoiYnJ1bGVjIiwiYSI6IlpEOGRJVkUifQ.SDYry6LIIHfMMpajIkFCAg'
+        }).addTo(map);
+
+        parcels = L.esri.featureLayer({
+          url: config.settings.parcel_url, 
+          style: style, 
+          onEachFeature: onEachFeature, 
+          minZoom: 16 
+        }).addTo(map);
+      });
+
     });
 
-    $('#dist').change(function () {
-      clickedFeature(glo);
-    });
 
-
-
-  	var map = L.map('mapid').setView(config.view.center, config.view.zoom);//[32.93, -97.22], 17);
-  	var clicked = [];
-  	var intersected = [];
-
-  	L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-    	attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-    	maxZoom: 18,
-    	id: 'mapbox.streets',
-    	accessToken: 'pk.eyJ1IjoiYnJ1bGVjIiwiYSI6IlpEOGRJVkUifQ.SDYry6LIIHfMMpajIkFCAg'
-	}).addTo(map);
 
 	function style(feature) {
 		return {
@@ -256,16 +277,16 @@
 
 
 	    var poly = turf.polygon([layer.feature.geometry.coordinates[0]])
-      distance = parseInt(config.inner_dist);
+      distance = parseInt(config.settings.inner_dist);
 	    var buffered = turf.buffer(poly, distance, { units: 'feet' });
 	    bufLyr = L.geoJson(buffered).addTo(map);
 
 	    parcels.query()["intersects"](buffered).ids(function(error, ids){
-	    	intersected = ids;
-			OIDs = ids.join();
-			for (var i = ids.length - 1; i >= 0; i--) {
-				parcels.setFeatureStyle(ids[i], { color: 'orange', weight: 3 });
-      			};
+    	 intersected = ids;
+	     OIDs = ids.join();
+			 for (var i = ids.length - 1; i >= 0; i--) {
+		      parcels.setFeatureStyle(ids[i], { color: 'orange', weight: 3 });
+	     };
   			//parcels.setWhere("OBJECTID IN (" + OIDs + ")")
 	    });
 	    var bbox = turf.bbox(buffered);
@@ -275,13 +296,6 @@
 	    //var clipped = turf.bboxClip(poly, buffered)
 	    //L.geoJson(clipped).addTo(map);
 	}
-
-	var parcels = L.esri.featureLayer({
-    url: config.parcel_url, 
-    style: style, 
-    onEachFeature: onEachFeature, 
-    minZoom: 16 
-  }).addTo(map);
 
     //parcels.bindPopup(function(evt) s
     //	return L.Util.template('<h3>{GIS_LINK}</h3><hr /><p>{STREETNUMBER} {STREETNAME} {STREETTYPE}', evt.feature.properties);
@@ -305,78 +319,67 @@
 	    data: data
 	});
 
-
-  //config stuff
-  dialog = $( "#dialog-form" ).dialog({
-    autoOpen: false,
-    height: 450,
-    width: 450,
-    modal: true,
-    buttons: {
-      "Save": function() {
-        SaveConfig();
-        dialog.dialog( "close" );
-        }, 
-      Cancel: function() {
-        dialog.dialog( "close" );
-      }
+//config stuff
+  var config = {
+    save: function (options) {
+      $.extend(this.settings, options);
+      localStorage.setItem("Config", JSON.stringify(this.settings));
+      location.reload();
     },
-    close: function() {
-      form[0].reset();
-      $('.click').removeClass('orange');
-    }
-  });
+    init: function(default_param, callback) {
+      this.default_settings = default_param;
+      var localConfig = JSON.parse(localStorage.getItem("Config"));
+      if (localConfig) {
+        this.settings = localConfig;
+      } else {
+        $.extend(this.settings, this.default_settings);
+      }
+      this.initForm();
 
-  form = dialog.find( "form" ).on( "submit", function( event ) { 
-    event.preventDefault();
-    SaveConfig();
-    dialog.dialog( "close" );
-  });
+      config.dialog.find( "form" ).on( "submit", function( event ) { 
+        event.preventDefault();
+        var options = config.readForm();
+        config.save(options);
+        config.dialog.dialog( "close" );
+      });
 
-  $( "#config" ).on( "click", function() {
-    $( "#distance1" ).val(config.inner_dist);
-    $( "#distance2" ).val(config.outer_dist);
-    $( "#parcel_url" ).val(config.parcel_url);
-    dialog.dialog( "open" );
-  });
-
-  function SaveConfig() {
-    // var center = map.getCenter();
-    // var zoom = map.getZoom();
-    config = {
-      inner_dist: parseInt($( "#distance1" ).val()),
-      outer_dist: parseInt($( "#distance2" ).val()),
-      parcel_url: $( "#parcel_url" ).val(), 
-      view: { center: map.getCenter(), zoom: map.getZoom() }
-    };
-    localStorage.setItem("Config", JSON.stringify(config));   
-    // parcels.options.url = config.parcel_url;
-    // parcels.refresh();
-    location.reload();
-  }
-
-
-  function GetConfigFromStorage() {
-    var localConfig = JSON.parse(localStorage.getItem("Config"));
-    if (localConfig) {
-      config = localConfig;
-      // {
-      //   inner_dist: localConfig.inner_dist,
-      //   outer_dist: localConfig.outer_dist,
-      //   parcel_url: localConfig.parcel_url,
-      //   view: localConfig.view
-      // }
-    } else {
-      config = {
-        inner_dist: 200,
-        outer_dist: 300,
-        parcel_url: 'https://mapit.tarrantcounty.com/arcgis/rest/services/Dynamic/TADParcels/MapServer/0',
-        view: { center: [32.93, -97.22], zoom: 17 }
+      callback();
+    },
+    dialog: $( "#dialog-form" ).dialog({
+      autoOpen: false,
+      height: 450,
+      width: 450,
+      modal: true,
+      buttons: {
+        "Save": function() {
+          var options = config.readForm();
+          config.save(options);
+          config.dialog.dialog("close")
+        }, 
+        Cancel: function() {
+          config.dialog.dialog("close")
+        }
+      },
+      close: function() {
+        $('.click').removeClass('orange');
+      }
+    }),
+    readForm: function(){
+      return {
+        inner_dist: parseInt($( "#distance1" ).val()),
+        outer_dist: parseInt($( "#distance2" ).val()),
+        parcel_url: $( "#parcel_url" ).val(), 
+        view: { center: map.getCenter(), zoom: map.getZoom() }
       };
+    },
+    initForm: function() {
+      $( "#distance1" ).val(this.settings.inner_dist);
+      $( "#distance2" ).val(this.settings.outer_dist);
+      $( "#parcel_url" ).val(this.settings.parcel_url);
     }
   }
+  
   	</script>
-  }
   </body>
 </html>
 

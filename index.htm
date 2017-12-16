@@ -332,7 +332,7 @@
       if (localConfig) {
         this.settings = localConfig;
       } else {
-        this.settings = $.extend([], this.default_settings);
+        this.settings = $.extend({}, this.default_settings);
       }
       this.initForm();
 

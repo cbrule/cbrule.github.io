@@ -1,0 +1,86 @@
+html { 
+	height: 100% 
+}
+body { 
+	height: 100%; 
+	margin: 0; 
+	padding: 0;
+}
+#mapid { 
+	height: 100%;
+	width: 100%; 
+	z-index: 0;
+	position: absolute;
+
+}
+#tools { 
+	height: 600px;
+	width: 100px; 
+	z-index: 2;
+	position: absolute;
+	top: 10%;
+	left: 2%;
+}
+#chart { 
+	background-color: white;
+	height: 450px;
+	width: 350px; 
+	z-index: 1;
+	position: absolute;
+	top: 2%;
+	right: 2%;
+}
+.pointer{
+	cursor: pointer;
+}
+#dist{
+	width: 50px;
+}
+.orange{
+	color: orange;
+}
+
+
+/*segmented control begin*/
+.segmented-control {
+    display: table;
+    width: 90%;
+    margin: auto;
+    margin-top: 30px;
+    padding: 0;
+    table-layout: fixed;
+    /*margin-bottom: 1.5em;*/
+}
+.segmented-control__item {
+    display: table-cell;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    width: 33.333%;
+}
+.segmented-control__input {
+    position: absolute;
+    visibility: hidden;
+}
+.segmented-control__label {
+    display: block;
+    margin: 0 -1px -1px 0; /* -1px margin removes double-thickness borders between items */
+    padding: .7em 0;
+    border: 1px solid gray;
+    text-align: center;  
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.segmented-control__input:checked + .segmented-control__label {
+    background: #3377D1;/*rgba(2, 85, 196, 0.8); #0255c4;*/
+    color: white; 
+}
+label[for='so'] {
+    cursor: wait;
+}
+label[for='cfs'] {
+    cursor: wait;
+}
+/*segmented control end*/

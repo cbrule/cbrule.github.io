@@ -1,8 +1,13 @@
-﻿var map;
+var map;
 var parcels;
 var clicked = [];
 var intersected = [];
+var buffered;
 var intParcels;
+var opposedLayer;
+var supportLayer;
+var bufferArea;
+var d = [0, 0, 0]
 
 $(document).ready(function () {
     $("#config").on("click", function () {
@@ -20,6 +25,7 @@ $(document).ready(function () {
         inner_dist: 200,
         outer_dist: 300,
         parcel_url: 'https://mapit.tarrantcounty.com/arcgis/rest/services/Dynamic/TADParcels/MapServer/0',
+        parcel_OID: 'OBJECTID',
         view: {
             center: [32.93, -97.22],
             zoom: 17
@@ -40,15 +46,16 @@ $(document).ready(function () {
             url: config.settings.parcel_url,
             style: style,
             onEachFeature: onEachFeature,
-            minZoom: 17
+            minZoom: 16
         }).addTo(map);
+
+        opposedLayer = L.geoJson(null, { style: opposedStyle }).addTo(map);
+        supportLayer = L.geoJson(null, { style: supportStyle }).addTo(map);
     });
 
 });
 
-
-
-function style(feature) {
+function style() {
     return {
         weight: 2,
         opacity: 1,
@@ -59,7 +66,7 @@ function style(feature) {
     };
 }
 
-function intersectedStyle(feature) {
+function intersectedStyle() {
     return {
         weight: 3,
         opacity: 1,
@@ -67,6 +74,26 @@ function intersectedStyle(feature) {
         dashArray: '3',
         fillOpacity: 0.1,
         fillColor: 'white'
+    };
+}
+
+function opposedStyle() {
+    return{
+        weight: 5,
+        color: '#1AD4D7',
+        dashArray: '',
+        fillOpacity: 0.7,
+        fillColor: '#ff0000'
+    };
+}
+
+function supportStyle() {
+    return{
+        weight: 5,
+        color: '#1AD4D7',
+        dashArray: '',
+        fillOpacity: 0.7,
+        fillColor: '#008000'
     };
 }
 
@@ -82,25 +109,11 @@ function highlightFeature(e) {
         });
     }
     else if ($('#support').attr("data-selected") === 'true') {
-        layer.setStyle({
-            weight: 5,
-            color: '#1AD4D7',
-            dashArray: '',
-            fillOpacity: 0.7,
-            fillColor: '#008000'
-        });
+        layer.setStyle(supportStyle());
     }
     else if ($('#opposed').attr("data-selected") === 'true') {
-        layer.setStyle({
-            weight: 5,
-            color: '#1AD4D7',
-            dashArray: '',
-            fillOpacity: 0.7,
-            fillColor: '#ff0000'
-        });
+        layer.setStyle(opposedStyle());
     }
-
-
     if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
         layer.bringToFront();
     }
@@ -146,16 +159,12 @@ function onEachIntersectedFeature(feature, layer) {
     layer.on({
         mouseover: highlightFeature,
         mouseout: resetHighlight,
-        click: clickedFeature
+        click: clickedIntersectedFeature
     });
 }
 
 function clickedFeature(e) {
-    if ($('#support').attr("data-selected") === 'true') {
-        var clipped = turf.bboxClip(poly, buffered)
-        L.geoJson(clipped).addTo(map);
-    }
-    else if ($('#buf').attr("data-selected") === 'true') {
+    if ($('#buf').attr("data-selected") === 'true') {
         layer = e.target;
 
         if (typeof bufLyr !== 'undefined') {
@@ -179,7 +188,8 @@ function clickedFeature(e) {
 
         var poly = turf.polygon([layer.feature.geometry.coordinates[0]])
         distance = parseInt(config.settings.inner_dist);
-        var buffered = turf.buffer(poly, distance, { units: 'feet' });
+        buffered = turf.buffer(poly, distance, { units: 'feet' });
+        bufferArea = turf.convertArea(turf.area(buffered), 'meters', 'feet');
         bufLyr = L.geoJson(buffered).addTo(map);
 
         parcels.query()["intersects"](buffered).ids(function (error, ids) {
@@ -188,14 +198,12 @@ function clickedFeature(e) {
 
             intParcels = L.esri.featureLayer({
                 url: config.settings.parcel_url,
-                where: "OBJECTID IN (" + OIDs + ")",
+                where: config.settings.parcel_OID + " IN (" + OIDs + ")",
                 style: intersectedStyle,
                 onEachFeature: onEachIntersectedFeature,
                 minZoom: 16
             }).addTo(map);
-            intParcels.bindPopup(function(evt) {
-                return L.Util.template('<hr /><p>{STREETNUMBER} {STREETNAME} {STREETTYPE}', evt.feature.properties);
-            });
+
             //for (var i = ids.length - 1; i >= 0; i--) {
             //    parcels.setFeatureStyle(ids[i], { color: 'orange', weight: 3 });
             //    parcels.eachFeature(onEachIntersectedFeature(layer));
@@ -205,18 +213,49 @@ function clickedFeature(e) {
         var bbox = turf.bbox(buffered);
         var bounds = [[bbox[1], bbox[0]], [bbox[3], bbox[2]]];
         map.fitBounds(bounds);
+        calcData();
     }
 
 }
 
+function clickedIntersectedFeature(e) {
+    if ($('#opposed').attr("data-selected") === 'true') {
+        var clipped = turf.intersect(e.target.feature, buffered)
+        if (clipped) {
+            opposedLayer.addData(clipped);
+            calcData(turf.convertArea(turf.area(clipped), 'meters', 'feet'))
+        }    
+    }
+    else if ($('#support').attr("data-selected") === 'true') {
+        var clipped = turf.intersect(e.target.feature, buffered)
+        if (clipped) {
+            supportLayer.addData(clipped);
+            calcData(null, turf.convertArea(turf.area(clipped), 'meters', 'feet'))
+        }
+    }
+}
 
+function calcData(opposed, support) {
+    if (opposed) {
+        d[0] = d[0] + opposed;
+        d[1] = d[1] - opposed
+    }
+    else if (support) {
+        //d[1] = d[1] + support
+    }
+    else {
+        d[0] = 0;
+        d[1] = bufferArea
+    }
 
-
+    chartData.datasets[0].data = d;
+    myDoughnutChart.update();
+}
 
 //chart stuff
-var data = {
+var chartData = {
     datasets: [{
-        data: [50, 40, 10],
+        data: [0, 100],
         backgroundColor: ['#ff3333', '#339933', 'orange']
     }],
 
@@ -226,7 +265,7 @@ var data = {
 var ctx = document.getElementById("myChart").getContext('2d');
 var myDoughnutChart = new Chart(ctx, {
     type: 'doughnut',
-    data: data
+    data: chartData
 });
 
 //config stuff
@@ -279,6 +318,7 @@ var config = {
             inner_dist: parseInt($("#distance1").val()),
             outer_dist: parseInt($("#distance2").val()),
             parcel_url: $("#parcel_url").val(),
+            parcel_OID: $("#parcel_OID").val(),
             view: { center: map.getCenter(), zoom: map.getZoom() }
         };
     },
@@ -286,5 +326,6 @@ var config = {
         $("#distance1").val(this.settings.inner_dist);
         $("#distance2").val(this.settings.outer_dist);
         $("#parcel_url").val(this.settings.parcel_url);
+        $("#parcel_OID").val(this.settings.parcel_OID);
     }
 }

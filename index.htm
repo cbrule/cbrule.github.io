@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 
 <head>
     <meta charset="UTF-8">
-    <title>Zoning Change Tool</title>
+    <title></title>
     <link href="css/jquery-ui.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" />
     <link href="css/leaflet.css" rel="stylesheet" />
@@ -12,10 +12,11 @@
     <link href="css/style.css" rel="stylesheet" />
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="scripts/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
     <script src="https://unpkg.com/esri-leaflet@2.0.4/dist/esri-leaflet.js"></script>
     <script src="https://unpkg.com/esri-leaflet-renderers@2.0.2/dist/esri-leaflet-renderers.js"></script>
-    <script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
+    <script src="scripts/turf.js"></script>
+    <!--<script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
     <script>
     	  $( function() {$( "#tools" ).draggable();} );
@@ -116,6 +117,10 @@
                     <div class="form-group">
                         <label for="parcel_url">Parcel REST URL</label><br />
                         <input type="text" name="parcel_url" id="parcel_url" class="form-control text ui-widget-content ui-corner-all">
+                    </div>
+                    <div class="form-group">
+                        <label for="parcel_OID">Parcel OID Field</label><br />
+                        <input type="text" name="parcel_OID" id="parcel_OID" class="form-control text ui-widget-content ui-corner-all">
                     </div>
                 </div>
 

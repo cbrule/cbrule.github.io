@@ -7,7 +7,7 @@ var intParcels;
 var opposedLayer;
 var supportLayer;
 var bufferArea;
-var d = [0, 0, 0]
+var pct = [0, 100]
 
 $(document).ready(function () {
     $("#config").on("click", function () {
@@ -203,19 +203,12 @@ function clickedFeature(e) {
                 onEachFeature: onEachIntersectedFeature,
                 minZoom: 16
             }).addTo(map);
-
-            //for (var i = ids.length - 1; i >= 0; i--) {
-            //    parcels.setFeatureStyle(ids[i], { color: 'orange', weight: 3 });
-            //    parcels.eachFeature(onEachIntersectedFeature(layer));
-            //};
-            //parcels.setWhere("OBJECTID IN (" + OIDs + ")")
         });
         var bbox = turf.bbox(buffered);
         var bounds = [[bbox[1], bbox[0]], [bbox[3], bbox[2]]];
         map.fitBounds(bounds);
         calcData();
     }
-
 }
 
 function clickedIntersectedFeature(e) {
@@ -235,20 +228,28 @@ function clickedIntersectedFeature(e) {
     }
 }
 
-function calcData(opposed, support) {
+function calcData(opposed) {
     if (opposed) {
-        d[0] = d[0] + opposed;
-        d[1] = d[1] - opposed
-    }
-    else if (support) {
-        //d[1] = d[1] + support
+        var percent = roundToTwo(opposed / bufferArea * 100);
+        var opposed = roundToTwo(pct[0] + percent) > 100 ? 100 : roundToTwo(pct[0] + percent);
+        var support = roundToTwo(pct[1] - percent) < 0 ? 0 : roundToTwo(pct[1] - percent);
+        pct[0] = opposed;
+        pct[1] = support;
+        $('#opposedArea').text(opposed + '%');
+        $('#supportArea').text(support + '%');
+        if (opposed > 20) {
+            $('#opposedArea').removeClass('nums');
+            $('#opposedArea').addClass('redNums');
+        }
     }
     else {
-        d[0] = 0;
-        d[1] = bufferArea
+        pct[0] = 0;
+        pct[1] = 100
+        $('#totalArea').text(roundToTwo(turf.convertArea(bufferArea, 'feet', 'acres')));
+        $('#opposedArea').text('0%');
+        $('#supportArea').text('100%');
     }
-
-    chartData.datasets[0].data = d;
+    chartData.datasets[0].data = pct;
     myDoughnutChart.update();
 }
 
@@ -260,13 +261,17 @@ var chartData = {
     }],
 
     // These labels appear in the legend and in the tooltips when hovering different arcs
-    labels: ['Opposed', 'Support', 'Other']
+    labels: ['Opposed', 'Support']
 };
 var ctx = document.getElementById("myChart").getContext('2d');
+ctx.canvas.width = 400;
+ctx.canvas.height = 275;
 var myDoughnutChart = new Chart(ctx, {
     type: 'doughnut',
-    data: chartData
+    data: chartData,
+    options: {responsive: false}
 });
+
 
 //config stuff
 var config = {
@@ -296,7 +301,7 @@ var config = {
     },
     dialog: $("#dialog-form").dialog({
         autoOpen: false,
-        height: 450,
+        height: 410,
         width: 450,
         modal: true,
         buttons: {
@@ -328,4 +333,8 @@ var config = {
         $("#parcel_url").val(this.settings.parcel_url);
         $("#parcel_OID").val(this.settings.parcel_OID);
     }
+}
+
+function roundToTwo(num) {
+    return +(Math.round(num + "e+2") + "e-2");
 }

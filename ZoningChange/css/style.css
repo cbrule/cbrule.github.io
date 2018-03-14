@@ -1,0 +1,55 @@
+﻿html { 
+	height: 100% 
+}
+body { 
+	height: 100%; 
+	margin: 0; 
+	padding: 0;
+}
+#mapid { 
+	height: 100%;
+	width: 100%; 
+	z-index: 0;
+	position: absolute;
+
+}
+#tools { 
+	height: 600px;
+	width: 100px; 
+	z-index: 2;
+	position: absolute;
+	top: 10%;
+	left: 2%;
+}
+#chart { 
+	background-color: white;
+	height: 375px;
+	width: 450px; 
+	z-index: 1;
+	position: absolute;
+	top: 2%;
+	right: 2%;
+}
+.pointer{
+	cursor: pointer;
+}
+#dist{
+	width: 50px;
+}
+.orange{
+	color: orange;
+}
+.nums{
+    font-size: 36px;
+    font-weight: bold;
+    color: orange;
+}
+.redNums{
+    font-size: 36px;
+    font-weight: bold;
+    color: red;
+}
+.numTitles{
+    font-size: 14px;
+    color: darkslategray;
+}

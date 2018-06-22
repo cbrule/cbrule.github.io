@@ -4,7 +4,8 @@ body {
     background: -webkit-gradient(linear, left top, left bottom, from(#EEEFEF), to(#cbccc8)) fixed;
   }
 #header{
-    max-height: 35rem;
+    max-height: 30rem;
+    padding: 15px;
 }
 .embed-responsive-map{
     min-height: 300px;

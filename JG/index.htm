@@ -4,14 +4,32 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://s3.amazonaws.com/icomoon.io/114779/Socicon/style.css?9ukd8d">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <title>JoyGrace & Company</title>
   </head>
   <body>
-    <div class="container-fluid">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a id="lnkMain" class="navbar-brand" href="#">JoyGraceCo</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+              <a id="lnkAbout" class="nav-link" href="#">About Us</a>
+            </li>
+            <li class="nav-item">
+                <a id="lnkShop" class="nav-link" href="#">Shop</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="https://www.facebook.com/groups/JoyGraceCo" target="_blank">Buy</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    <div id="main" class="container-fluid">
     	<div class="row">
         <div class="col">
             <img id="header" src="img/header2.png" class="img-fluid mx-auto d-block"/>
@@ -123,6 +141,8 @@
       </div>
     </div>
   </div>
+  <div id="about" class="container-fluid" style="display: none;"><h1>about goes here</h1></div>
+  <div id="shop" class="container-fluid" style="display: none;"><h1>shop goes here</h1></div>
   <script src="scripts/jquery-3.3.1.min.js"></script>
     <script src="scripts/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>

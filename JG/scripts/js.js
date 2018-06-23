@@ -17,4 +17,10 @@ $(document).ready(function () {
         $('#shop').show();
         return false;
     });
+    Hammer(document.getElementById("caroInner")).on("swipeleft", function() {
+        $('#carousel').carousel('next');
+    });       
+    Hammer(document.getElementById("caroInner")).on("swiperight", function() {
+        $('#carousel').carousel('prev'); 
+    });
 });

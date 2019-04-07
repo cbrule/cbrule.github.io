@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Security-Policy" content="connect-src * ; img-src data: blob: ; child-src blob: ; ">
+    <title>Mapbox GL JS Test</title>
+	<script src='mapbox-gl.js'></script>
+	<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.css' rel='stylesheet' />
+	<link href="css/style.css" rel="stylesheet" />
+</head>
+<body>
+	<div id='mapid'></div>
+	<script>
+	mapboxgl.accessToken = 'pk.eyJ1IjoiYnJ1bGVjIiwiYSI6IlpEOGRJVkUifQ.SDYry6LIIHfMMpajIkFCAg';
+	var map = new mapboxgl.Map({
+	    container: 'mapid',
+	    style: 'mapbox://styles/mapbox/streets-v9',
+        zoom: 10,
+    	center: [-97.33, 32.75]
+	});
+	map.on('load', function () {
+	    map.addSource('parcels', {
+    	    "type": "vector",
+        	"url": "mapbox://brulec.bwb1kp3d"
+    	});
+	    map.addLayer({
+	        'id': 'parcels',
+	        'type': 'fill',
+	        'source': 'parcels',
+	        'source-layer': 'in',
+	        'paint': {
+		        'fill-color': 'rgba(255,255,255,0.0)',
+		        'fill-outline-color': 'rgba(239,140,11,0.8)',
+		    }
+    });
+	   //  map.addLayer({
+	   //      'id': 'parcels-hover',
+	   //      'type': 'fill',
+	   //      'source': 'parcels',
+	   //      'source-layer': 'in',
+	   //      'paint': {
+		  //       'fill-color': 'rgba(255,255,255,0.8)',
+		  //       'fill-opacity': 0.8,
+		  //       'fill-outline-color': '#e13333'
+		  //   },
+		  //   "filter": ["==", "OBJECTID", ""]
+    // });
+	    // Center the map on the coordinates of any clicked symbol from the 'symbols' layer.
+	    map.on('click', 'parcels', function (e) {
+	        console.log(e.features[0].properties.OBJECTID);
+	    });
+
+	    // Change the cursor to a pointer when the it enters a feature in the 'symbols' layer.
+	    map.on('mouseenter', 'parcels', function (e) {
+	        map.getCanvas().style.cursor = 'pointer';
+	        //map.setFilter("parcels-hover", ["==", "OBJECTID", e.features[0].properties.OBJECTID]);
+	    });
+
+	    // Change it back to a pointer when it leaves.
+	    map.on('mouseleave', 'parcels', function () {
+	        map.getCanvas().style.cursor = '';
+	       // map.setFilter("parcels-hover", ["==", "OBJECTID", ""]);
+	    });
+});
+	</script>
+</body>
+</html>

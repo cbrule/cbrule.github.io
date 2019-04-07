@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link href="css/jquery-ui.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" />
+    <link href="css/leaflet.css" rel="stylesheet" />
+    <link rel="stylesheet" href="pe-icon-7-stroke/css/pe-icon-7-stroke.css">
+    <link rel="stylesheet" href="pe-icon-7-stroke/css/helper.css">
+    <link href="css/style.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/esri-leaflet@2.0.4/dist/esri-leaflet.js"></script>
+    <script src="https://unpkg.com/esri-leaflet-renderers@2.0.2/dist/esri-leaflet-renderers.js"></script>
+    <!--<script src="scripts/turf.js"></script>-->
+    <script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+    <script>
+    	  $( function() {$( "#tools" ).draggable();} );
+    	  $( function() {$( "#chart" ).draggable();} );
+    </script>
+</head>
+<body>
+    <div id="mapid"></div>
+    <div id="chart" class="ui-widget-content">
+        <div class="container">
+            <canvas id="myChart"></canvas>
+            <br />
+            <div class="row">
+                <div class="col text-center numTitles">Total Land Area</div>
+                <div class="col text-center numTitles">Area Opposed</div>
+                <div class="col text-center numTitles">Area in Support</div>
+            </div>
+            <div class="row">
+                <div class="col text-center"><span id="totalArea" class="nums" /></div>   
+                <div class="col text-center"><span id="opposedArea" class="nums" /></div>              
+                <div class="col text-center"><span id="supportArea" class="nums" /></div>
+            </div>
+        </div>
+    </div>
+    <div id="tools" class="ui-widget-content">
+        <br>
+        <br>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col text-center">
+                    <span id="buf" class="pe-7s-expand1 pe-3x pe-va orange pointer click" data-selected="true"></span>
+                </div>
+            </div>
+            <br>
+            <br>
+            <div class="row justify-content-center">
+                <div class="col text-center">
+                    <span id="support" class="pe-7s-plus pe-3x pe-va pointer click"></span>
+                </div>
+            </div>
+            <br>
+            <br>
+            <div class="row justify-content-center">
+                <div class="col text-center">
+                    <span id="opposed" class="pe-7s-less pe-3x pe-va pointer click"></span>
+                </div>
+            </div>
+            <br>
+            <br>
+            <div class="row justify-content-center">
+                <div class="col text-center">
+                    <span id="clear" class="pe-7s-close-circle pe-3x pe-va pointer click"></span>
+                </div>
+            </div>
+            <br>
+            <br>
+            <div class="row justify-content-center">
+                <div class="col text-center">
+                    <span id="config" class="pe-7s-config pe-3x pe-va pointer click"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="dialog-form" title="Settings">
+        <form>
+            <fieldset>
+                <div class="form-group">
+                    <label for="distance1">Buffer Distance</label><br />
+                    <div class="row">
+                        <div class="col-6">
+                            <input type="text" name="distance1" id="distance1" class="form-control text ui-widget-content ui-corner-all"><br />
+                        </div>
+                        <div class="col-6">ft</div>
+                    </div>
+                    <!--<label for="distance2">Outer Distance</label><br />
+                    <div class="row">
+                        <div class="col-6">
+                            <input type="text" name="distance2" id="distance2" class="form-control text ui-widget-content ui-corner-all"><br />
+                        </div>
+                        <div class="col-6">ft</div>
+                    </div>-->
+                    <div class="form-group">
+                        <label for="parcel_url">Parcel REST URL</label><br />
+                        <input type="text" name="parcel_url" id="parcel_url" class="form-control text ui-widget-content ui-corner-all">
+                    </div>
+                    <div class="form-group">
+                        <label for="parcel_OID">Parcel OID Field</label><br />
+                        <input type="text" name="parcel_OID" id="parcel_OID" class="form-control text ui-widget-content ui-corner-all">
+                    </div>
+                </div>
+                <!-- Allow form submission with keyboard without duplicating the dialog button -->
+                <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+            </fieldset>
+        </form>
+    </div>
+    <script src="scripts/js.js"></script>
+</body>
+</html>

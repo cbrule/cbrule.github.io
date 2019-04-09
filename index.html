@@ -13,6 +13,9 @@
   <title>Cody Brule - GIS Developer</title>
   <link href="css/index.css" rel="stylesheet">
   <link href="lib/fontello/css/fontello.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
 </head>
 <body>
 <header class="header-container">
@@ -49,7 +52,7 @@
     <div class="timeline__line"></div>
       <div class="timeline__item">
         <div class="experience">
-          <header class="experience__header">Jul 2017 - Present</header>
+          <header class="experience__header">Jul 2016 - Present</header>
           <h2 class="experience__name">
             Senior Application Programmer Analyst at Tarrant County
           </h2>
@@ -106,8 +109,6 @@
           </h2>
           <ul>
             <li>GIS Certificate</li>
-            <li>2nd Place in Student Poster Awards SWAAG 2011</li>
-            <li>3.7 GPA</li>
         </ul>
         </div>
       </div>
@@ -132,7 +133,13 @@
         <p>
           Mosquito Control is used by Tarrant County Public Health to document and track mosquito prevention efforts.
           <div>
-            <a class="btn" href="//" target="_blank">View Project</a>
+            <a class="btn" data-fancybox="gallery" data-caption="User authentication with security levels" href="img/mc_1.png">View Project</a>
+            <div class="hidden" href="img/mc_2.png" data-fancybox="gallery" data-caption="Mobile first design"></div>
+            <div class="hidden" href="img/mc_3.png" data-fancybox="gallery" data-caption="Ability to add images from mobile data collection"></div>
+            <div class="hidden" href="img/mc_4.png" data-fancybox="gallery" data-caption="Administrator interface to monitor field work"></div>
+            <div class="hidden" href="img/mc_5.png" data-fancybox="gallery" data-caption="Applicator license management"></div>
+            <div class="hidden" href="img/mc_6.png" data-fancybox="gallery" data-caption="Reports and charts"></div>
+            </a>
           </div>
         </p>
       </div>
@@ -186,5 +193,13 @@
   <h1 class='footer__name'>Cody Brule</h1>
   <h2 class='footer__title'>GIS Developer</h2>
 </footer>
+<script>
+  $('[data-fancybox="gallery"]').fancybox({
+    loop: true,
+    buttons: [
+    "close"
+  ]
+});
+</script>
 </body>
 </html>

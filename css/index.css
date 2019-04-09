@@ -375,3 +375,6 @@ body {
     margin-top: 0;
     color: #f04
 }
+.hidden{
+    display: none;
+}

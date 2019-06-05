@@ -1,0 +1,56 @@
+@import url(https://fonts.googleapis.com/css?family=Rubik:300,300i,400,400i,500,500i,700,700i,900,900i);
+@import url(https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700);
+img {
+    image-orientation: from-image;
+}
+body {
+    background: -webkit-gradient(linear, left top, left bottom, from(#EEEFEF), to(#cbccc8)) fixed;
+  }
+#header{
+    max-height: 30rem;
+    padding: 15px;
+}
+.embed-responsive-map{
+    min-height: 300px;
+}
+.follow{
+    background: linear-gradient(90deg, #7DD2BF, #EB808A);
+    padding-top: 4%;
+    padding-bottom: 4%;
+    font-family: 'Poppins', sans-serif;
+    font-size: 3.5vw;
+    color: white;
+}
+.follow a:link { color: #70DB93; }
+.follow a:visited { color: #70DB93; }
+.follow a:hover { color: #70DB93; text-decoration: none;}
+.follow a:active { color: #70DB93; }
+.icon{
+    padding: 25px;
+    font-size: 4rem;
+}
+.break{
+    width: 5rem;
+    height: 3px;
+    background: linear-gradient(90deg, #7DD2BF, #EB808A);
+    display: inline-block;
+}
+.items{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    max-height: 900px;
+}
+#loadScreen {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    padding-top: 20%;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(255,255,255,0.8);
+}

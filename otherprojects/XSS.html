@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <label>Input:</label>
+    <input type="text" id="txtInput" size="50"><br><br>
+    <input type="submit" id=btnSubmit onclick="submit()">
+    <br>
+    <br>
+    <div id="lbl"></div>
+
+    <script>
+        var queryDict = {};
+        location.search.substr(1).split("&").forEach(function(item) {queryDict[item.split("=")[0]] = item.split("=")[1]})
+        if (queryDict.text) {
+            document.getElementById('lbl').innerHTML = queryDict.text;
+        }
+
+        function submit(){
+            document.getElementById('lbl').innerHTML = document.getElementById('txtInput').value;
+        }
+    </script>
+
+</body>
+</html>
